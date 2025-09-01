@@ -33,5 +33,5 @@ if __name__ == "__main__":
             for file in os.listdir(directory):
                 if file.endswith(".sol"):
                      base, ext = os.path.splitext(file)
-                     output_file =os.path.join("/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined", f"{base}_refined{ext}")
+                     output_file = f"{base}_refined{ext}"
                      refine_dataset(os.path.join(directory, file), output_file)

@@ -6,9 +6,14 @@ import os
 
 #read the Solidity file to find the pragma version
 def set_solc_version(sol_file):
-    with open(sol_file, "r") as f:
-        code = f.read()
-    match = re.search(r"pragma solidity\s+([^;]+);", code)
+    try:
+        with open(sol_file, "r") as f:
+            solidity_code = f.read()
+    except FileNotFoundError:
+        print(f"Error: File '{sol_file}' not found.")
+        sys.exit(1)
+    filename = os.path.basename(sol_file)
+    match = re.search(r"pragma solidity\s+([^;]+);", solidity_code)
     if match: 
         version = match.group(1).replace("^", "").strip()
         # Check if the version is installed if not install it
@@ -16,11 +21,12 @@ def set_solc_version(sol_file):
             subprocess.run(["solc-select", "install", version], check=True)
         except subprocess.CalledProcessError as e:
             print(f"Error installing solc version {version}: {e}")
-            sys.exit(1)
+            sys.exit(3)
         # Active version
         subprocess.run(["solc-select", "use", version], check=True)
     else:
         print("No pragma found, using default solc version")
+        sys.exit(2)
 
 # Run Slither on the Solidity file(s) using the detected version
 def run_slither(sol_file):

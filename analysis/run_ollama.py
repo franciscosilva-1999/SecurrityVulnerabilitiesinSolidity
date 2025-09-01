@@ -13,7 +13,8 @@ def run_ollama(sol_path):
     filename = os.path.basename(sol_path)
    
     prompt = f"You are a tool able to detect security vulnerabilities in Solidity code.By analysing the code below, identify if there are any vulnerabilities present.:\n'''{solidity_code}'''\nAnswer the question indicating the following information:\n Vulnerability name: <name> \nLine number(s): <numbers>"
-
+    print("Prompting Ollama with the following prompt:")
+    print(prompt)
     # Call Ollama with CodeLlama
     try:
         result = subprocess.run(
