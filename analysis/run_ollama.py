@@ -36,11 +36,10 @@ def run_ollama(sol_path):
 
     output_file = "codellama_output.csv"
     filename = os.path.basename(sol_path)
-    prompt_name= "Prompt Analysys for file:" + filename
-
+    print(f"Analyzing {filename}...")
     with open(output_file, mode="a", newline="", encoding="utf-8") as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerow([prompt_name, response, "Execution Time (seconds):"+ str(round(seconds, 4))])
+        writer = csv.writer(csv_file, delimiter=';')
+        writer.writerow([filename, response, str(round(seconds, 4))])
 
     print(f" Output saved to {output_file}")
 
