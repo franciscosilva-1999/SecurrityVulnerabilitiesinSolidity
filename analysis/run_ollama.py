@@ -2,6 +2,7 @@ import sys
 import csv
 import os
 import subprocess
+import time
 
 def run_ollama(sol_path):
     try:
@@ -13,17 +14,19 @@ def run_ollama(sol_path):
     filename = os.path.basename(sol_path)
    
     prompt = f"You are a tool able to detect security vulnerabilities in Solidity code.By analysing the code below, identify if there are any vulnerabilities present.:\n'''{solidity_code}'''\nAnswer the question indicating the following information:\n Vulnerability name: <name> \nLine number(s): <numbers>"
-    print("Prompting Ollama with the following prompt:")
-    print(prompt)
+
     # Call Ollama with CodeLlama
     try:
+        start = time.perf_counter()
         result = subprocess.run(
-            ["ollama", "run", "codellama"],
+            [ "ollama", "run", "codellama"],
             input=prompt,
             text=True,
             capture_output=True,
             check=True
         )
+        end = time.perf_counter()
+        seconds = end - start
         response = result.stdout.strip()
     except subprocess.CalledProcessError as e:
         print("Error running Ollama:", e.stderr)
@@ -37,11 +40,12 @@ def run_ollama(sol_path):
 
     with open(output_file, mode="a", newline="", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow([prompt_name, response])
+        writer.writerow([prompt_name, response, "Execution Time (seconds):"+ str(round(seconds, 4))])
 
     print(f" Output saved to {output_file}")
 
 if __name__ == "__main__":
+
     if len(sys.argv) != 2:
         print("<path-to-solidity-file(s)> must be specified as second argument.")
     else:

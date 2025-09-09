@@ -1,0 +1,658 @@
+zaibot.sol;Vulnerabilities found.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+INFO:Detectors:
+LGEWhitelisted._applyLGEWhitelist(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#558-587) uses a dangerous strict equality:
+	- _lgeTimestamp == 0 && sender != _lgePairAddress && recipient == _lgePairAddress && amount > 0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#565)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dangerous-strict-equalities
+INFO:Detectors:
+Reentrancy in ZAIBOT._transfer(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#842-907):
+	External calls:
+	- r.swapExactTokensForTokensSupportingFeeOnTransferTokens(feeRewardAmount,0,_feeRewardSwapPath,_feeRewardAddress,block.timestamp) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#884-890)
+	State variables written after the call(s):
+	- _balances[recipient] = _balances[recipient].add(amount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#903)
+	ZAIBOT._balances (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#594) can be used in cross function reentrancies:
+	- ZAIBOT._burn(address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#681-697)
+	- ZAIBOT._transfer(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#842-907)
+	- ZAIBOT.balanceOf(address) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#730-732)
+	- ZAIBOT.constructor(uint256,uint256,address,address) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#616-640)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1
+INFO:Detectors:
+ZAIBOT.allowance(address,address).owner (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#750) shadows:
+	- Ownable.owner() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#371-373) (function)
+ZAIBOT._approve(address,address,uint256).owner (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#922) shadows:
+	- Ownable.owner() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#371-373) (function)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#local-variable-shadowing
+INFO:Detectors:
+ZAIBOT.setFees(uint256,uint256,address[],address) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#654-664) should emit an event for: 
+	- _feeBurnPct = feeBurnPct (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#659) 
+	- _feeRewardPct = feeRewardPct (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#660) 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-events-arithmetic
+INFO:Detectors:
+LGEWhitelisted.createLGEWhitelist(address,uint256[],uint256[]).pairAddress (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#458) lacks a zero-check on :
+		- _lgePairAddress = pairAddress (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#464)
+ZAIBOT.constructor(uint256,uint256,address,address).router (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#616) lacks a zero-check on :
+		- _router = router (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#632)
+ZAIBOT.setRouter(address).r (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#642) lacks a zero-check on :
+		- _router = r (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#643)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation
+INFO:Detectors:
+Reentrancy in ZAIBOT.transferFrom(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#778-782):
+	External calls:
+	- _transfer(sender,recipient,amount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#779)
+		- r.swapExactTokensForTokensSupportingFeeOnTransferTokens(feeRewardAmount,0,_feeRewardSwapPath,_feeRewardAddress,block.timestamp) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#884-890)
+	State variables written after the call(s):
+	- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#780)
+		- _allowances[owner][spender] = amount (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#926)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+INFO:Detectors:
+Reentrancy in ZAIBOT._transfer(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#842-907):
+	External calls:
+	- r.swapExactTokensForTokensSupportingFeeOnTransferTokens(feeRewardAmount,0,_feeRewardSwapPath,_feeRewardAddress,block.timestamp) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#884-890)
+	Event emitted after the call(s):
+	- Transfer(sender,recipient,amount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#904)
+Reentrancy in ZAIBOT.transferFrom(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#778-782):
+	External calls:
+	- _transfer(sender,recipient,amount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#779)
+		- r.swapExactTokensForTokensSupportingFeeOnTransferTokens(feeRewardAmount,0,_feeRewardSwapPath,_feeRewardAddress,block.timestamp) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#884-890)
+	Event emitted after the call(s):
+	- Approval(owner,spender,amount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#927)
+		- _approve(sender,_msgSender(),_allowances[sender][_msgSender()].sub(amount,ERC20: transfer amount exceeds allowance)) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#780)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+INFO:Detectors:
+LGEWhitelisted.getLGEWhitelistRound() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#519-551) uses timestamp for comparisons
+	Dangerous comparisons:
+	- _lgeTimestamp > 0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#531)
+	- block.timestamp <= wlCloseTimestampLast (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#538)
+LGEWhitelisted._applyLGEWhitelist(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#558-587) uses timestamp for comparisons
+	Dangerous comparisons:
+	- _lgeTimestamp == 0 && sender != _lgePairAddress && recipient == _lgePairAddress && amount > 0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#565)
+	- wlRoundNumber > 0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#573)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp
+INFO:Detectors:
+Context._msgData() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#334-337) is never used and should be removed
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dead-code
+INFO:Detectors:
+Version constraint 0.8.19 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess.
+It is used by:
+	- 0.8.19 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#7)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Function IUniswapV2Router01.WETH() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#185) is not in mixedCase
+Variable LGEWhitelisted._lgeWhitelistRounds (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#415) is not in mixedCase
+Variable LGEWhitelisted._lgeTimestamp (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#417) is not in mixedCase
+Variable LGEWhitelisted._lgePairAddress (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#418) is not in mixedCase
+Variable LGEWhitelisted._whitelister (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#420) is not in mixedCase
+Variable ZAIBOT._feeExcluded (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#603) is not in mixedCase
+Variable ZAIBOT._feeBurnPct (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#605) is not in mixedCase
+Variable ZAIBOT._feeRewardPct (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#606) is not in mixedCase
+Variable ZAIBOT._feeRewardAddress (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#608) is not in mixedCase
+Variable ZAIBOT._pair (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#610) is not in mixedCase
+Variable ZAIBOT._router (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#612) is not in mixedCase
+Variable ZAIBOT._feeRewardSwapPath (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#614) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+INFO:Detectors:
+Redundant expression ""this (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#335)"" inContext (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#329-338)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#redundant-statements
+INFO:Detectors:
+ZAIBOT.constructor(uint256,uint256,address,address) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#616-640) uses literals with too many digits:
+	- _totalSupply = 100000000e18 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#621)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits
+INFO:Detectors:
+Loop condition i < _lgeWhitelistRounds.length (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#534) should use cached array length instead of referencing `length` member of the storage array.
+ Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#cache-array-length
+INFO:Detectors:
+ZAIBOT._decimals (smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol#599) should be immutable 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-immutable
+INFO:Slither:/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/zaibot.sol analyzed (8 contracts with 100 detectors), 31 result(s) found";3.5029
+Gummies.sol;Error analysing smart contract.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/Gummies.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes,compact-format --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+Compilation warnings/errors on /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/Gummies.sol:
+Error: Source file requires different compiler version (current compiler is 0.8.0+commit.c7dfd78e.Darwin.appleclang) - note that nightly builds are considered to be strictly less than the released version
+   --> /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/Gummies.sol:437:1:
+    |
+437 | pragma solidity 0.8.19;
+    | ^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Traceback (most recent call last):
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 581, in _run_solc
+    ret: Dict = json.loads(stdout)
+                ~~~~~~~~~~^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py"", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/decoder.py"", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/decoder.py"", line 363, in raw_decode
+    raise JSONDecodeError(""Expecting value"", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/bin/slither"", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/slither/__main__.py"", line 776, in main
+    main_impl(all_detector_classes=detectors, all_printer_classes=printers)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/slither/__main__.py"", line 882, in main_impl
+    ) = process_all(filename, args, detector_classes, printer_classes)
+        ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/slither/__main__.py"", line 96, in process_all
+    compilations = compile_all(target, **vars(args))
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/crytic_compile.py"", line 722, in compile_all
+    compilations.append(CryticCompile(target, **kwargs))
+                        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/crytic_compile.py"", line 211, in __init__
+    self._compile(**kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/crytic_compile.py"", line 633, in _compile
+    self._platform.compile(self, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 150, in compile
+    targets_json = _get_targets_json(compilation_unit, self._target, **kwargs)
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 279, in _get_targets_json
+    return _run_solc(
+        compilation_unit,
+    ...<6 lines>...
+        force_legacy_json=force_legacy_json,
+    )
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 585, in _run_solc
+    raise InvalidCompilation(f""Invalid solc compilation {stderr}"")
+crytic_compile.platform.exceptions.InvalidCompilation: Invalid solc compilation Error: Source file requires different compiler version (current compiler is 0.8.0+commit.c7dfd78e.Darwin.appleclang) - note that nightly builds are considered to be strictly less than the released version
+   --> /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/Gummies.sol:437:1:
+    |
+437 | pragma solidity 0.8.19;
+    | ^^^^^^^^^^^^^^^^^^^^^^^";2.8032
+ElonCEO.sol;Vulnerabilities found.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes,compact-format --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+INFO:Detectors:
+Reentrancy in ELONCEO._transfer(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#244-258):
+	External calls:
+	- internalSwap() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#253)
+		- uniswapRouter.swapExactTokensForETHSupportingFeeOnTransferTokens(_amount,0,path,address(this),block.timestamp) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#282-288)
+		- (success,None) = marketingWallet.call{value: newBalance}() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#270)
+	External calls sending eth:
+	- internalSwap() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#253)
+		- (success,None) = marketingWallet.call{value: newBalance}() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#270)
+	State variables written after the call(s):
+	- super._transfer(_from,_to,toTransfer) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#256)
+		- _balances[from] = fromBalance - amount (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#93)
+		- _balances[to] += amount (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#94)
+	ERC20._balances (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#64) can be used in cross function reentrancies:
+	- ERC20._mint(address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#99-106)
+	- ERC20._transfer(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#87-98)
+	- ERC20.balanceOf(address) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#75)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities
+INFO:Detectors:
+ELONCEO._totalSupply (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#147) shadows:
+	- ERC20._totalSupply (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#66)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variable-shadowing
+INFO:Detectors:
+ELONCEO.clearTokens(address) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#212-219) ignores return value by token.transfer(msg.sender,balance) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#217)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unchecked-transfer
+INFO:Detectors:
+Reentrancy in ELONCEO.internalSwap() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#260-274):
+	External calls:
+	- swapToBNB(taxAmount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#268)
+		- uniswapRouter.swapExactTokensForETHSupportingFeeOnTransferTokens(_amount,0,path,address(this),block.timestamp) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#282-288)
+	- (success,None) = marketingWallet.call{value: newBalance}() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#270)
+	External calls sending eth:
+	- (success,None) = marketingWallet.call{value: newBalance}() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#270)
+	State variables written after the call(s):
+	- isSwapping = false (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#273)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+INFO:Detectors:
+Reentrancy in ELONCEO._transfer(address,address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#244-258):
+	External calls:
+	- internalSwap() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#253)
+		- uniswapRouter.swapExactTokensForETHSupportingFeeOnTransferTokens(_amount,0,path,address(this),block.timestamp) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#282-288)
+		- (success,None) = marketingWallet.call{value: newBalance}() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#270)
+	External calls sending eth:
+	- internalSwap() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#253)
+		- (success,None) = marketingWallet.call{value: newBalance}() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#270)
+	Event emitted after the call(s):
+	- Transfer(from,to,amount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#96)
+		- super._transfer(_from,_to,toTransfer) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#256)
+	- TransferTaxed(_from,_to,_amount,toTransfer) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#257)
+Reentrancy in ELONCEO.clearTokens(address) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#212-219):
+	External calls:
+	- token.transfer(msg.sender,balance) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#217)
+	Event emitted after the call(s):
+	- TokensCleared(_tokenAddress,msg.sender,balance) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#218)
+Reentrancy in ELONCEO.internalSwap() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#260-274):
+	External calls:
+	- swapToBNB(taxAmount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#268)
+		- uniswapRouter.swapExactTokensForETHSupportingFeeOnTransferTokens(_amount,0,path,address(this),block.timestamp) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#282-288)
+	- (success,None) = marketingWallet.call{value: newBalance}() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#270)
+	External calls sending eth:
+	- (success,None) = marketingWallet.call{value: newBalance}() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#270)
+	Event emitted after the call(s):
+	- SwapAndLiquify(taxAmount,newBalance) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#272)
+Reentrancy in ELONCEO.swapToBNB(uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#276-291):
+	External calls:
+	- uniswapRouter.swapExactTokensForETHSupportingFeeOnTransferTokens(_amount,0,path,address(this),block.timestamp) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#282-288)
+	Event emitted after the call(s):
+	- TokensSwappedForBNB(_amount,newBalance) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#290)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+INFO:Detectors:
+Context._msgData() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#19) is never used and should be removed
+ERC20._burn(address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#107-118) is never used and should be removed
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dead-code
+INFO:Detectors:
+Version constraint 0.8.5 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess
+	- AbiReencodingHeadOverflowWithStaticArrayCleanup
+	- DirtyBytesArrayToStorage
+	- DataLocationChangeInInternalOverride
+	- NestedCalldataArrayAbiReencodingSizeValidation
+	- SignedImmutables.
+It is used by:
+	- 0.8.5 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#15)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Low level call in ELONCEO.internalSwap() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#260-274):
+	- (success,None) = marketingWallet.call{value: newBalance}() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#270)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Detectors:
+Function IDexRouter.WETH() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#141) is not in mixedCase
+Parameter ELONCEO.setWhitelistStatus(address,bool)._wallet (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#192) is not in mixedCase
+Parameter ELONCEO.setWhitelistStatus(address,bool)._status (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#192) is not in mixedCase
+Parameter ELONCEO.clearTokens(address)._tokenAddress (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#212) is not in mixedCase
+Parameter ELONCEO.checkWhitelist(address)._wallet (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#221) is not in mixedCase
+Parameter ELONCEO.swapToBNB(uint256)._amount (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#276) is not in mixedCase
+Constant ELONCEO._totalSupply (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#147) is not in UPPER_CASE_WITH_UNDERSCORES
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+INFO:Detectors:
+Redundant expression ""this (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#19)"" inContext (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#17-20)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#redundant-statements
+INFO:Detectors:
+Reentrancy in ELONCEO.clearBNB() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#203-209):
+	External calls:
+	- address(msg.sender).transfer(amount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#207)
+	Event emitted after the call(s):
+	- BNBCleared(msg.sender,amount) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#208)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+INFO:Detectors:
+ELONCEO.slitherConstructorVariables() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#146-295) uses literals with too many digits:
+	- swapTokensAtAmount = _totalSupply / 100000 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#151)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits
+INFO:Detectors:
+ELONCEO.marketingWallet (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#150) should be constant 
+ELONCEO.swapTokensAtAmount (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#151) should be constant 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-constant
+INFO:Detectors:
+ELONCEO.pairAddress (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#149) should be immutable 
+ELONCEO.uniswapRouter (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol#148) should be immutable 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-immutable
+INFO:Slither:/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/ElonCEO.sol analyzed (8 contracts with 100 detectors), 26 result(s) found";3.1829
+GodMode.sol;Vulnerabilities found.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+INFO:Detectors:
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) has bitwise-xor operator ^ instead of the exponentiation operator **: 
+	 - inverse = (3 * denominator) ^ 2 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#586)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-exponentiation
+INFO:Detectors:
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) performs a multiplication on the result of a division:
+	- denominator = denominator / twos (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#571)
+	- inverse = (3 * denominator) ^ 2 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#586)
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) performs a multiplication on the result of a division:
+	- denominator = denominator / twos (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#571)
+	- inverse *= 2 - denominator * inverse (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#590)
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) performs a multiplication on the result of a division:
+	- denominator = denominator / twos (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#571)
+	- inverse *= 2 - denominator * inverse (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#591)
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) performs a multiplication on the result of a division:
+	- denominator = denominator / twos (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#571)
+	- inverse *= 2 - denominator * inverse (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#592)
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) performs a multiplication on the result of a division:
+	- denominator = denominator / twos (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#571)
+	- inverse *= 2 - denominator * inverse (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#593)
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) performs a multiplication on the result of a division:
+	- denominator = denominator / twos (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#571)
+	- inverse *= 2 - denominator * inverse (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#594)
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) performs a multiplication on the result of a division:
+	- denominator = denominator / twos (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#571)
+	- inverse *= 2 - denominator * inverse (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#595)
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) performs a multiplication on the result of a division:
+	- prod0 = prod0 / twos (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#574)
+	- result = prod0 * inverse (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#601)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#divide-before-multiply
+INFO:Detectors:
+ERC20Permit.constructor(string).name (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#2199) shadows:
+	- ERC20.name() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1900-1902) (function)
+	- IERC20Metadata.name() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1829) (function)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#local-variable-shadowing
+INFO:Detectors:
+ERC20Permit.permit(address,address,uint256,uint256,uint8,bytes32,bytes32) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#2204-2227) uses timestamp for comparisons
+	Dangerous comparisons:
+	- block.timestamp > deadline (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#2213)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp
+INFO:Detectors:
+StorageSlot.getAddressSlot(bytes32) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#152-157) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#154-156)
+StorageSlot.getBooleanSlot(bytes32) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#162-167) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#164-166)
+StorageSlot.getBytes32Slot(bytes32) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#172-177) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#174-176)
+StorageSlot.getUint256Slot(bytes32) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#182-187) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#184-186)
+StorageSlot.getStringSlot(bytes32) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#192-197) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#194-196)
+StorageSlot.getStringSlot(string) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#202-207) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#204-206)
+StorageSlot.getBytesSlot(bytes32) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#212-217) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#214-216)
+StorageSlot.getBytesSlot(bytes) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#222-227) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#224-226)
+ShortStrings.toString(ShortString) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#293-303) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#298-301)
+Math.mulDiv(uint256,uint256,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#525-604) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#532-535)
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#556-563)
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#569-578)
+Strings.toString(uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#843-863) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#849-851)
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#855-857)
+MessageHashUtils.toEthSignedMessageHash(bytes32) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#945-952) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#947-951)
+MessageHashUtils.toTypedDataHash(bytes32,bytes32) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#991-1000) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#993-999)
+ECDSA.tryRecover(bytes32,bytes) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1222-1239) uses assembly
+	- INLINE ASM (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1230-1234)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage
+INFO:Detectors:
+Context._contextSuffixLength() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1625-1627) is never used and should be removed
+Context._msgData() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1621-1623) is never used and should be removed
+Nonces._useCheckedNonce(address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#53-58) is never used and should be removed
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dead-code
+INFO:Detectors:
+Version constraint ^0.8.20 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess.
+It is used by:
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#16)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#66)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#98)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#235)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#360)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#406)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#824)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#920)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1008)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1170)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1347)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1439)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1604)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1635)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1737)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1819)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1847)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#2165)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#2250)
+	- ^0.8.20 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#2290)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Function EIP712._EIP712Name() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1149-1151) is not in mixedCase
+Function EIP712._EIP712Version() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1160-1162) is not in mixedCase
+Function IERC20Permit.DOMAIN_SEPARATOR() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1432) is not in mixedCase
+Function ERC20Permit.DOMAIN_SEPARATOR() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#2240-2242) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+INFO:Detectors:
+ShortStrings.slitherConstructorConstantVariables() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#270-353) uses literals with too many digits:
+	- FALLBACK_SENTINEL = 0x00000000000000000000000000000000000000000000000000000000000000FF (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#272)
+GodMode.constructor(address) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#2293-2299) uses literals with too many digits:
+	- _mint(msg.sender,700000000 * 10 ** decimals()) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#2298)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits
+INFO:Detectors:
+EIP712._nameFallback (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1054) should be constant 
+EIP712._versionFallback (smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol#1055) should be constant 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-constant
+INFO:Slither:/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/GodMode.sol analyzed (22 contracts with 100 detectors), 37 result(s) found";3.8083
+SantaPepe.sol;Vulnerabilities found.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+INFO:Detectors:
+SantaPepe.allowance(address,address).owner (smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol#124) shadows:
+	- Ownable.owner() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol#54-56) (function)
+SantaPepe._approve(address,address,uint256).owner (smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol#197) shadows:
+	- Ownable.owner() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol#54-56) (function)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#local-variable-shadowing
+INFO:Detectors:
+Version constraint 0.8.15 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess
+	- StorageWriteRemovalBeforeConditionalTermination
+	- AbiReencodingHeadOverflowWithStaticArrayCleanup.
+It is used by:
+	- 0.8.15 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+SantaPepe.constructor() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol#86-93) uses literals with too many digits:
+	- _totalSupply = 420690000000000 * (10 ** uint256(_decimals)) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol#90)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits
+INFO:Detectors:
+SantaPepe._decimals (smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol#81) should be immutable 
+SantaPepe._totalSupply (smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol#82) should be immutable 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-immutable
+INFO:Slither:/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/SantaPepe.sol analyzed (4 contracts with 100 detectors), 6 result(s) found";3.1174
+koalacoin.sol;Vulnerabilities found.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/koalacoin.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes,compact-format --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+INFO:Detectors:
+Context._msgData() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/koalacoin.sol#148-150) is never used and should be removed
+ERC20._burn(address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/koalacoin.sol#454-469) is never used and should be removed
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dead-code
+INFO:Detectors:
+Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess
+	- AbiReencodingHeadOverflowWithStaticArrayCleanup
+	- DirtyBytesArrayToStorage
+	- DataLocationChangeInInternalOverride
+	- NestedCalldataArrayAbiReencodingSizeValidation
+	- SignedImmutables
+	- ABIDecodeTwoDimensionalArrayMemory
+	- KeccakCaching.
+It is used by:
+	- ^0.8.0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/koalacoin.sol#9)
+	- ^0.8.0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/koalacoin.sol#103)
+	- ^0.8.0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/koalacoin.sol#131)
+	- ^0.8.0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/koalacoin.sol#157)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Slither:/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/koalacoin.sol analyzed (5 contracts with 100 detectors), 3 result(s) found";2.965
+Metacons.sol;Vulnerabilities found.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/Metacons.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+INFO:Detectors:
+Context._msgData() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/Metacons.sol#31-33) is never used and should be removed
+ERC20Burnable.burnFrom(address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/Metacons.sol#247-250) is never used and should be removed
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dead-code
+INFO:Detectors:
+Version constraint 0.8.19 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess.
+It is used by:
+	- 0.8.19 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/Metacons.sol#6)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Metacoms.constructor() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/Metacons.sol#255-257) uses literals with too many digits:
+	- _mint(msg.sender,500000000 * 10 ** decimals()) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/Metacons.sol#256)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits
+INFO:Slither:/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/Metacons.sol analyzed (7 contracts with 100 detectors), 4 result(s) found";3.3029
+ShinChan.sol;Vulnerabilities found.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+INFO:Detectors:
+Contract locking ether found:
+	Contract ShinChan (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#411-755) has payable functions:
+	 - ShinChan.constructor(string,string,uint8,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#424-437)
+	But does not have a function to withdraw the ether
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#contracts-that-lock-ether
+INFO:Detectors:
+ShinChan.allowance(address,address).owner (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#512) shadows:
+	- Ownable.owner() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#138-140) (function)
+ShinChan._approve(address,address,uint256).owner (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#713) shadows:
+	- Ownable.owner() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#138-140) (function)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#local-variable-shadowing
+INFO:Detectors:
+3 different versions of Solidity are used:
+	- Version constraint 0.8.24 is used by:
+		-0.8.24 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#6)
+	- Version constraint ^0.8.0 is used by:
+		-^0.8.0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#88)
+		-^0.8.0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#177)
+	- Version constraint =0.8.24 is used by:
+		-=0.8.24 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#402)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used
+INFO:Detectors:
+Context._msgData() (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#105-107) is never used and should be removed
+ShinChan._burn(address,uint256) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#686-697) is never used and should be removed
+ShinChan._setupDecimals(uint8) (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#731-733) is never used and should be removed
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dead-code
+INFO:Detectors:
+Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess
+	- AbiReencodingHeadOverflowWithStaticArrayCleanup
+	- DirtyBytesArrayToStorage
+	- DataLocationChangeInInternalOverride
+	- NestedCalldataArrayAbiReencodingSizeValidation
+	- SignedImmutables
+	- ABIDecodeTwoDimensionalArrayMemory
+	- KeccakCaching.
+It is used by:
+	- ^0.8.0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#88)
+	- ^0.8.0 (smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol#177)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Slither:/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/ShinChan.sol analyzed (6 contracts with 100 detectors), 8 result(s) found";1.0656
+Seedex.sol;Error analysing smart contract.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/Seedex.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+Compilation warnings/errors on /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/Seedex.sol:
+Error: Expected identifier but got 'pragma'
+  --> smartbugs-curated-main/dataset_refined/InterfinetNetwork/Seedex.sol:26:1:
+   |
+26 | pragma solidity 0.8.20;
+   | ^^^^^^
+
+
+Traceback (most recent call last):
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 581, in _run_solc
+    ret: Dict = json.loads(stdout)
+                ~~~~~~~~~~^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py"", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/decoder.py"", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/decoder.py"", line 363, in raw_decode
+    raise JSONDecodeError(""Expecting value"", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/bin/slither"", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/slither/__main__.py"", line 776, in main
+    main_impl(all_detector_classes=detectors, all_printer_classes=printers)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/slither/__main__.py"", line 882, in main_impl
+    ) = process_all(filename, args, detector_classes, printer_classes)
+        ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/slither/__main__.py"", line 96, in process_all
+    compilations = compile_all(target, **vars(args))
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/crytic_compile.py"", line 722, in compile_all
+    compilations.append(CryticCompile(target, **kwargs))
+                        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/crytic_compile.py"", line 211, in __init__
+    self._compile(**kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/crytic_compile.py"", line 633, in _compile
+    self._platform.compile(self, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 150, in compile
+    targets_json = _get_targets_json(compilation_unit, self._target, **kwargs)
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 279, in _get_targets_json
+    return _run_solc(
+        compilation_unit,
+    ...<6 lines>...
+        force_legacy_json=force_legacy_json,
+    )
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 585, in _run_solc
+    raise InvalidCompilation(f""Invalid solc compilation {stderr}"")
+crytic_compile.platform.exceptions.InvalidCompilation: Invalid solc compilation Error: Expected identifier but got 'pragma'
+  --> smartbugs-curated-main/dataset_refined/InterfinetNetwork/Seedex.sol:26:1:
+   |
+26 | pragma solidity 0.8.20;
+   | ^^^^^^";3.112
+flokita.sol;Error analysing smart contract.;"'solc --version' running
+'solc /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/flokita.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes,compact-format --allow-paths .,/Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork' running
+Compilation warnings/errors on /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/flokita.sol:
+Error: Source file requires different compiler version (current compiler is 0.8.0+commit.c7dfd78e.Darwin.appleclang) - note that nightly builds are considered to be strictly less than the released version
+   --> /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/flokita.sol:437:1:
+    |
+437 | pragma solidity 0.8.19;
+    | ^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Traceback (most recent call last):
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 581, in _run_solc
+    ret: Dict = json.loads(stdout)
+                ~~~~~~~~~~^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py"", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/decoder.py"", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/decoder.py"", line 363, in raw_decode
+    raise JSONDecodeError(""Expecting value"", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/bin/slither"", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/slither/__main__.py"", line 776, in main
+    main_impl(all_detector_classes=detectors, all_printer_classes=printers)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/slither/__main__.py"", line 882, in main_impl
+    ) = process_all(filename, args, detector_classes, printer_classes)
+        ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/slither/__main__.py"", line 96, in process_all
+    compilations = compile_all(target, **vars(args))
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/crytic_compile.py"", line 722, in compile_all
+    compilations.append(CryticCompile(target, **kwargs))
+                        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/crytic_compile.py"", line 211, in __init__
+    self._compile(**kwargs)
+    ~~~~~~~~~~~~~^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/crytic_compile.py"", line 633, in _compile
+    self._platform.compile(self, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 150, in compile
+    targets_json = _get_targets_json(compilation_unit, self._target, **kwargs)
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 279, in _get_targets_json
+    return _run_solc(
+        compilation_unit,
+    ...<6 lines>...
+        force_legacy_json=force_legacy_json,
+    )
+  File ""/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/crytic_compile/platform/solc.py"", line 585, in _run_solc
+    raise InvalidCompilation(f""Invalid solc compilation {stderr}"")
+crytic_compile.platform.exceptions.InvalidCompilation: Invalid solc compilation Error: Source file requires different compiler version (current compiler is 0.8.0+commit.c7dfd78e.Darwin.appleclang) - note that nightly builds are considered to be strictly less than the released version
+   --> /Users/franciscosilva/Desktop/MEI/Repo/smartbugs-curated-main/dataset_refined/InterfinetNetwork/flokita.sol:437:1:
+    |
+437 | pragma solidity 0.8.19;
+    | ^^^^^^^^^^^^^^^^^^^^^^^";2.8161

@@ -3,6 +3,7 @@ import re
 import sys
 import csv
 import os
+import time
 
 #read the Solidity file to find the pragma version
 def set_solc_version(sol_file):
@@ -33,26 +34,31 @@ def run_slither(sol_file):
     set_solc_version(sol_file)
 
     cmd = ["slither", sol_file]
+    start = time.perf_counter()
     result = subprocess.run(cmd, capture_output=True, text=True)
+    end = time.perf_counter()
+    seconds = end - start
+
 
     if result.returncode == 0:
-        status = "No vulnerabilities found"
+        status = "No vulnerabilities found."
         message = result.stdout.strip()
     elif result.returncode == 255:  # Slither error code for vulnerabilities found
-        status = "Vulnerabilities found:"
+        status = "Vulnerabilities found."
         message = result.stderr.strip()
     elif result.returncode == 1:
-        status = "Error analysing smart contract"
+        status = "Error analysing smart contract."
         message = result.stderr.strip()
     else:
-        status = f"Unknown return code {result.returncode}"
+        status = f"Unknown return code {result.returncode}."
         message = result.stderr.strip()
 
     output_csv="slither_analysis_results.csv"
- 
+    filename = os.path.basename(sol_file)
+
     with open(output_csv, mode="a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow([sol_file, status, message])
+        writer = csv.writer(f, delimiter=';')
+        writer.writerow([filename, status, message, str(round(seconds, 4))])
     print(f"Results saved to {output_csv}")
 
 if __name__ == "__main__":
@@ -65,4 +71,5 @@ if __name__ == "__main__":
             directory = sys.argv[1]
             for file in os.listdir(directory):
                 if file.endswith(".sol"):
+                    print(f"Analysing {file}...")
                     run_slither(os.path.join(directory, file))
